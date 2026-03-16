@@ -174,7 +174,7 @@ export default function Projects() {
   return (
     <section id="projects" className="section-padding relative">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="orb-2 absolute top-1/2 right-0 w-[500px] h-[500px] rounded-full bg-primary-500/[0.03] blur-3xl" />
+        <div className="hidden md:block orb-2 absolute top-1/2 right-0 w-[500px] h-[500px] rounded-full bg-primary-500/[0.02] blur-2xl md:blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10" ref={ref}>

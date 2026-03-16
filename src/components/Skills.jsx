@@ -119,7 +119,7 @@ export default function Skills() {
   return (
     <section id="skills" className="section-padding relative">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="orb-1 absolute bottom-0 left-1/4 w-[500px] h-[500px] rounded-full bg-primary-500/[0.03] blur-3xl" />
+        <div className="hidden md:block orb-1 absolute bottom-0 left-1/4 w-[500px] h-[500px] rounded-full bg-primary-500/[0.02] blur-2xl md:blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10" ref={ref}>

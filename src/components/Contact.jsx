@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import emailjs from '@emailjs/browser';
 import { useInView } from 'react-intersection-observer';
-import { HiOutlineMail, HiOutlineLocationMarker } from 'react-icons/hi';
+import { HiOutlineMail, HiOutlineLocationMarker, HiCheckCircle, HiXCircle } from 'react-icons/hi';
 import { FaGithub, FaLinkedin, FaPaperPlane } from 'react-icons/fa';
 
 const contactInfo = [
@@ -44,12 +44,50 @@ const contactInfo = [
   },
 ];
 
+const Toast = ({ message, type, isVisible, onClose }) => (
+  <AnimatePresence>
+    {isVisible && (
+      <motion.div
+        initial={{ opacity: 0, y: 50, x: '-50%' }}
+        animate={{ opacity: 1, y: 0, x: '-50%' }}
+        exit={{ opacity: 0, y: 20, scale: 0.95, x: '-50%' }}
+        className="fixed bottom-10 left-1/2 z-[100] w-[90%] max-w-md"
+      >
+        <div className={`glass-card p-4 rounded-2xl flex items-center gap-4 shadow-2xl border ${
+          type === 'success' ? 'border-accent-500/30 bg-accent-500/5' : 'border-red-500/30 bg-red-500/5'
+        }`}>
+          <div className={`p-2 rounded-xl ${
+            type === 'success' ? 'bg-accent-500/20 text-accent-400' : 'bg-red-500/20 text-red-400'
+          }`}>
+            {type === 'success' ? <HiCheckCircle size={24} /> : <HiXCircle size={24} />}
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-white">{message}</p>
+          </div>
+          <button 
+            onClick={onClose}
+            className="p-1 hover:bg-white/10 rounded-lg transition-colors text-dark-400 hover:text-white"
+          >
+            <HiXCircle size={20} className="opacity-50" />
+          </button>
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
 export default function Contact() {
   const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true });
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [toast, setToast] = useState({ isVisible: false, message: '', type: 'success' });
   const formRef = useRef(null);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ isVisible: true, message, type });
+    setTimeout(() => setToast(prev => ({ ...prev, isVisible: false })), 5000);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -61,15 +99,16 @@ export default function Contact() {
 
     // Replace these credentials with your actual EmailJS credentials
     // You can get them from https://www.emailjs.com/
-    const serviceId = 'YOUR_EMAILJS_SERVICE_ID';
-    const templateId = 'YOUR_EMAILJS_TEMPLATE_ID';
-    const publicKey = 'YOUR_EMAILJS_PUBLIC_KEY';
+    const serviceId = 'service_2otidzj';
+    const templateId = 'template_fdyvqvk';
+    const publicKey = 'N3vLnuzy55ijaoDQH';
 
-    // If credentials are not set yet, fallback to simulation so the UI still works
-    if (serviceId === 'YOUR_EMAILJS_SERVICE_ID') {
+    // If credentials are still placeholders, fallback to simulation so the UI still works
+    if (serviceId === 'YOUR_EMAILJS_SERVICE_ID' || templateId === 'YOUR_EMAILJS_TEMPLATE_ID' || publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
       setTimeout(() => {
         setSending(false);
         setSent(true);
+        showToast('Success! Your message has been sent successfully. I will get back to you soon!', 'success');
         setFormData({ name: '', email: '', message: '' });
         setTimeout(() => setSent(false), 3000);
       }, 1500);
@@ -77,29 +116,39 @@ export default function Contact() {
     }
 
     emailjs
-      .sendForm(serviceId, templateId, formRef.current, {
+      .send(serviceId, templateId, {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      }, {
         publicKey: publicKey,
       })
       .then(
         () => {
           setSending(false);
           setSent(true);
+          showToast('Success! Your message has been sent successfully. I will get back to you soon!', 'success');
           setFormData({ name: '', email: '', message: '' });
           setTimeout(() => setSent(false), 3000);
         },
         (error) => {
           setSending(false);
-          console.error('FAILED...', error.text);
-          alert('Message failed to send. Please use direct email instead.');
+          console.error('FAILED...', error);
+          const errorMsg = error.text || error.message || 'Check your internet or EmailJS settings.';
+          showToast(`Message failed: ${errorMsg}`, 'error');
         }
       );
   };
 
   return (
     <section id="contact" className="section-padding relative">
+      <Toast 
+        {...toast} 
+        onClose={() => setToast(prev => ({ ...prev, isVisible: false }))} 
+      />
       <div className="absolute inset-0 pointer-events-none">
-        <div className="orb-2 absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-primary-500/[0.03] blur-3xl" />
-        <div className="orb-1 absolute top-20 left-0 w-[300px] h-[300px] rounded-full bg-accent-500/[0.03] blur-3xl" />
+        <div className="hidden md:block orb-2 absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-primary-500/[0.02] blur-2xl md:blur-3xl" />
+        <div className="orb-1 absolute top-20 left-0 w-[300px] h-[300px] rounded-full bg-accent-500/[0.02] blur-2xl md:blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10" ref={ref}>

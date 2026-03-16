@@ -61,9 +61,9 @@ export default function Hero() {
             </motion.h1>
 
             {/* Title with Typing Animation */}
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center sm:justify-start gap-4 mb-6 h-12">
-              <div className="h-0.5 w-12 bg-gradient-to-r from-primary-500 to-accent-400 rounded-full" />
-              <div className="text-xl md:text-2xl font-mono font-bold text-primary-400">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center sm:justify-start gap-4 mb-6 min-h-[3rem] lg:min-h-0">
+              <div className="hidden sm:block h-0.5 w-12 bg-gradient-to-r from-primary-500 to-accent-400 rounded-full" />
+              <div className="text-xl md:text-2xl font-mono font-bold text-primary-400 text-center sm:text-left">
                 <span>I'm a </span>
                 <TypeAnimation
                   sequence={[

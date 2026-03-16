@@ -37,7 +37,7 @@ export default function About() {
   return (
     <section id="about" className="section-padding relative">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="orb-2 absolute top-20 right-0 w-[400px] h-[400px] rounded-full bg-accent-500/[0.03] blur-3xl" />
+        <div className="hidden md:block orb-2 absolute top-20 right-0 w-[400px] h-[400px] rounded-full bg-accent-500/[0.02] blur-2xl md:blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10" ref={ref}>
